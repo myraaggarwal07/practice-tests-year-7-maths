@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Angles - Practice Test 1</title>
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --secondary: #3b82f6;
+            --bg-color: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --correct-bg: #dcfce7;
+            --correct-border: #22c55e;
+            --incorrect-bg: #fee2e2;
+            --incorrect-border: #ef4444;
+            --input-border: #d1d5db;
+            --btn-hover: #1d4ed8;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        .header-container {
+            background-color: var(--primary);
+            color: white;
+            padding: 2rem 1rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-container h1 {
+            margin: 0;
+            font-size: 2.2rem;
+            letter-spacing: 1px;
+        }
+
+        .header-container p {
+            margin: 0.5rem 0 0;
+            color: #bfdbfe;
+            font-size: 1.1rem;
+        }
+
+        .meta-data {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .meta-field {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .meta-field label {
+            font-size: 0.9rem;
+            color: #bfdbfe;
+            margin-bottom: 0.3rem;
+            font-weight: 600;
+        }
+
+        .meta-field input {
+            padding: 0.6rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            width: 250px;
+            max-width: 100%;
+        }
+
+        /* Score Banner */
+        #score-banner {
+            background-color: var(--card-bg);
+            border-top: 5px solid var(--correct-border);
+            padding: 1.5rem;
+            margin: 2rem auto;
+            max-width: 800px;
+            text-align: center;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: none;
+            animation: slideDown 0.5s ease-out forwards;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        #score-banner h2 {
+            margin: 0;
+            color: var(--primary);
+            font-size: 1.8rem;
+        }
+
+        #score-banner p {
+            font-size: 1.2rem;
+            margin: 0.5rem 0 0;
+            color: var(--text-muted);
+        }
+
+        #score-banner .highlight-score {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--correct-border);
+        }
+
+        .main-content {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .question-card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border-left: 5px solid var(--primary);
+            transition: all 0.3s ease;
+        }
+
+        .question-card.correct {
+            border-left-color: var(--correct-border);
+        }
+
+        .question-card.incorrect {
+            border-left-color: var(--incorrect-border);
+        }
+
+        .q-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .q-marks {
+            background: #e5e7eb;
+            color: var(--text-muted);
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+        }
+
+        .q-text {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .diagram-container {
+            text-align: center;
+            margin: 1.5rem 0;
+            background: #fafafa;
+            border: 1px solid #eaeaea;
+            border-radius: 6px;
+            padding: 1rem;
+        }
+
+        .answer-area {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .answer-area input[type="text"] {
+            flex: 1;
+            padding: 0.8rem;
+            border: 1px solid var(--input-border);
+            border-radius: 6px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .answer-area input[type="text"]:focus {
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .feedback-panel {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 6px;
+            display: none;
+            font-size: 0.95rem;
+        }
+
+        .feedback-panel.correct {
+            background-color: var(--correct-bg);
+            border: 1px solid #bbf7d0;
+            display: block;
+        }
+
+        .feedback-panel.incorrect {
+            background-color: var(--incorrect-bg);
+            border: 1px solid #fecaca;
+            display: block;
+        }
+
+        .feedback-header {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .feedback-panel.correct .feedback-header { color: #166534; }
+        .feedback-panel.incorrect .feedback-header { color: #991b1b; }
+
+        .submit-container {
+            text-align: center;
+            margin: 3rem 0;
+        }
+
+        .submit-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(30, 58, 138, 0.2);
+            transition: background-color 0.3s, transform 0.1s;
+        }
+
+        .submit-btn:hover {
+            background-color: var(--btn-hover);
+        }
+
+        .submit-btn:active {
+            transform: scale(0.98);
+        }
+
+        @media (max-width: 600px) {
+            .meta-data { flex-direction: column; gap: 1rem; align-items: center; }
+            .meta-field input { width: 100%; }
+            .q-header { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <form id="quiz-form">
+        <div class="header-container">
+            <h1>Angles - Practice Test 1</h1>
+            <p>Year 7 Mathematics | Problem Solving & Geometry</p>
+            
+            <div class="meta-data">
+                <div class="meta-field">
+                    <label for="student-name">Student Name</label>
+                    <input type="text" id="student-name" placeholder="Enter your full name" required>
+                </div>
+                <div class="meta-field">
+                    <label for="date-field">Date</label>
+                    <input type="date" id="date-field" required>
+                </div>
+            </div>
+        </div>
+
+        <div id="score-banner" class="hidden">
+            <h2>Test Submitted!</h2>
+            <p>Student: <span id="display-name" style="font-weight:bold; color:var(--text-main);"></span></p>
+            <div class="highlight-score"><span id="total-score">0</span> / 50 Marks</div>
+            <p>Grade: <span id="percentage-score" style="font-weight:bold;">0%</span></p>
+        </div>
+
+        <div class="main-content" id="questions-container">
+            <!-- Questions dynamically injected via JS -->
+        </div>
+
+        <div class="submit-container">
+            <button type="submit" class="submit-btn" id="submit-button">Submit Test & Check Answers</button>
+        </div>
+    </form>
+
+    <script>
+        // Initialize Date
+        document.getElementById('date-field').valueAsDate = new Date();
+
+        // Prevent Default Submission
+        document.getElementById('quiz-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            gradeQuiz();
+        });
+
+        const questions = [
+            {
+                id: 1,
+                text: "What is the specific geometric name for an angle that measures exactly 45°?",
+                svg: "",
+                answers: ["acute", "acute angle"],
+                explanation: "An acute angle is any angle that measures between 0° and 90°."
+            },
+            {
+                id: 2,
+                text: "What is the geometric name for an angle that measures 130°?",
+                svg: "",
+                answers: ["obtuse", "obtuse angle"],
+                explanation: "An obtuse angle is any angle that measures strictly between 90° and 180°."
+            },
+            {
+                id: 3,
+                text: "If an angle measures 250°, what type of angle is it?",
+                svg: "",
+                answers: ["reflex", "reflex angle"],
+                explanation: "A reflex angle is any angle that measures strictly between 180° and 360°."
+            },
+            {
+                id: 4,
+                text: "Find the size of angle x. (The angles are complementary).",
+                svg: `<svg viewBox="0 0 200 150" width="100%" height="150">
+                        <line x1="50" y1="130" x2="180" y2="130" stroke="#000" stroke-width="2"/>
+                        <line x1="50" y1="130" x2="50" y2="20" stroke="#000" stroke-width="2"/>
+                        <polyline points="50,115 65,115 65,130" fill="none" stroke="#000" stroke-width="1.5"/>
+                        <line x1="50" y1="130" x2="150" y2="40" stroke="#000" stroke-width="2"/>
+                        <path d="M 80 130 A 30 30 0 0 0 72 110" fill="none" stroke="#e74c3c" stroke-width="2"/>
+                        <text x="95" y="120" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold">35°</text>
+                        <path d="M 50 80 A 50 50 0 0 1 72 110" fill="none" stroke="#3498db" stroke-width="2"/>
+                        <text x="55" y="90" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold" fill="#3498db">x</text>
+                      </svg>`,
+                answers: ["55"],
+                explanation: "Complementary angles add up to 90°. Therefore, x = 90° - 35° = 55°."
+            },
+            {
+                id: 5,
+                text: "Find the value of a. (The angles are supplementary).",
+                svg: `<svg viewBox="0 0 300 120" width="100%" height="120">
+                        <line x1="20" y1="100" x2="280" y2="100" stroke="#000" stroke-width="2"/>
+                        <line x1="150" y1="100" x2="220" y2="20" stroke="#000" stroke-width="2"/>
+                        <path d="M 180 100 A 30 30 0 0 0 167 80" fill="none" stroke="#e74c3c" stroke-width="2"/>
+                        <text x="195" y="90" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold">40°</text>
+                        <path d="M 110 100 A 40 40 0 0 1 167 80" fill="none" stroke="#3498db" stroke-width="2"/>
+                        <text x="130" y="85" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold" fill="#3498db">a</text>
+                      </svg>`,
+                answers: ["140"],
+                explanation: "Angles on a straight line add to 180° (supplementary). a = 180° - 40° = 140°."
+            },
+            {
+                id: 6,
+                text: "Find the value of x without using a protractor.",
+                svg: `<svg viewBox="0 0 200 150" width="100%" height="150">
+                        <line x1="30" y1="30" x2="170" y2="120" stroke="#000" stroke-width="2"/>
+                        <line x1="30" y1="120" x2="170" y2="30" stroke="#000" stroke-width="2"/>
+                        <path d="M 118 86 A 25 25 0 0 0 118 64" fill="none" stroke="#e74c3c" stroke-width="2"/>
+                        <text x="135" y="75" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold">68°</text>
+                        <path d="M 82 64 A 25 25 0 0 0 82 86" fill="none" stroke="#3498db" stroke-width="2"/>
+                        <text x="65" y="75" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold" fill="#3498db">x</text>
+                      </svg>`,
+                answers: ["68"],
+                explanation: "Vertically opposite angles are equal. Therefore, x = 68°."
+            },
+            {
+                id: 7,
+                text: "Calculate the value of y. (Angles at a point)",
+                svg: `<svg viewBox="0 0 200 200" width="100%" height="200">
+                        <line x1="100" y1="100" x2="100" y2="20" stroke="#000" stroke-width="2"/>
+                        <line x1="100" y1="100" x2="180" y2="100" stroke="#000" stroke-width="2"/>
+                        <line x1="100" y1="100" x2="40" y2="160" stroke="#000" stroke-width="2"/>
+                        <polyline points="100,85 115,85 115,100" fill="none" stroke="#000" stroke-width="1.5"/>
+                        <path d="M 100 120 A 20 20 0 0 0 120 100" fill="none" stroke="#e74c3c" stroke-width="2"/>
+                        <text x="125" y="115" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold">130°</text>
+                        <path d="M 86 114 A 30 30 0 0 1 100 70" fill="none" stroke="#3498db" stroke-width="2"/>
+                        <text x="80" y="90" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold" fill="#3498db">y</text>
+                      </svg>`,
+                answers: ["140"],
+                explanation: "Angles in a revolution (at a point) add to 360°. One angle is a right angle (90°). y = 360° - 90° - 130° = 140°."
+            },
+            {
+                id: 8,
+                text: "Find the size of alternate angle a.",
+                svg: `<svg viewBox="0 0 300 200" width="100%" height="200">
+                        <line x1="50" y1="60" x2="250" y2="60" stroke="#000" stroke-width="2"/>
+                        <path d="M 235 55 L 245 60 L 235 65" fill="none" stroke="#000" stroke-width="2"/>
+                        <line x1="50" y1="140" x2="250" y2="140" stroke="#000" stroke-width="2"/>
+                        <path d="M 235 135 L 245 140 L 235 145" fill="none" stroke="#000" stroke-width="2"/>
+                        <line x1="80" y1="20" x2="220" y2="180" stroke="#000" stroke-width="2"/>
+                        <path d="M 125 60 A 15 15 0 0 0 115 50" fill="none" stroke="#e74c3c" stroke-width="2"/>
+                        <text x="115" y="40" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold">52°</text>
+                        <path d="M 175 140 A 15 15 0 0 0 185 150" fill="none" stroke="#3498db" stroke-width="2"/>
+                        <text x="185" y="160" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold" fill="#3498db">a</text>
+                      </svg>`,
+                answers: ["52"],
+                explanation: "Alternate angles ('Z' pattern) in parallel lines are equal. a = 52°."
+            },
+            {
+                id: 9,
+                text: "Determine the value of corresponding angle b.",
+                svg: `<svg viewBox="0 0 300 200" width="100%" height="200">
+                        <line x1="50" y1="60" x2="250" y2="60" stroke="#000" stroke-width="2"/>
+                        <path d="M 235 55 L 245 60 L 235 65" fill="none" stroke="#000" stroke-width="2"/>
+                        <line x1="50" y1="140" x2="250" y2="140" stroke="#000" stroke-width="2"/>
+                        <path d="M 235 135 L 245 140 L 235 145" fill="none" stroke="#000" stroke-width="2"/>
+                        <line x1="120" y1="20" x2="180" y2="180" stroke="#000" stroke-width="2"/>
+                        <path d="M 148 60 A 15 15 0 0 0 135 50" fill="none" stroke="#e74c3c" stroke-width="2"/>
+                        <text x="135" y="40" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold">110°</text>
+                        <path d="M 178 140 A 15 15 0 0 0 165 130" fill="none" stroke="#3498db" stroke-width="2"/>
+                        <text x="165" y="120" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold" fill="#3498db">b</text>
+                      </svg>`,
+                answers: ["110"],
+                explanation: "Corresponding angles ('F' pattern) in parallel lines are equal. b = 110°."
+            },
+            {
+                id: 10,
+                text: "Find the size of co-interior angle c.",
+                svg: `<svg viewBox="0 0 300 200" width="100%" height="200">
+                        <line x1="50" y1="60" x2="250" y2="60" stroke="#000" stroke-width="2"/>
+                        <path d="M 235 55 L 245 60 L 235 65" fill="none" stroke="#000" stroke-width="2"/>
+                        <line x1="50" y1="140" x2="250" y2="140" stroke="#000" stroke-width="2"/>
+                        <path d="M 235 135 L 245 140 L 235 145" fill="none" stroke="#000" stroke-width="2"/>
+                        <line x1="100" y1="20" x2="160" y2="180" stroke="#000" stroke-width="2"/>
+                        <path d="M 130 60 A 15 15 0 0 1 115 80" fill="none" stroke="#e74c3c" stroke-width="2"/>
+                        <text x="135" y="80" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold">65°</text>
+                        <path d="M 160 140 A 15 15 0 0 0 145 120" fill="none" stroke="#3498db" stroke-width="2"/>
+                        <text x="165" y="120" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold" fill="#3498db">c</text>
+                      </svg>`,
+                answers: ["115"],
+                explanation: "Co-interior angles ('C' pattern) in parallel lines sum to 180°. c = 180° - 65° = 115°."
+            },
+            {
+                id: 11,
+                text: "Calculate the value of a in this triangle.",
+                svg: `<svg viewBox="0 0 300 150" width="100%" height="150">
+                        <polygon points="50,130 250,130 180,40" fill="none" stroke="#000" stroke-width="2"/>
+                        <path d="M 80 130 A 20 20 0 0 0 70 115" fill="none" stroke="#000" stroke-width="1.5"/>
+                        <text x="85" y="120" text-anchor="middle" dominant-baseline="central" font-size="13">40°</text>
+                        <path d="M 220 130 A 20 20 0 0 1 230 115" fill="none" stroke="#000" stroke-width="1.5"/>
+                        <text x="215" y="120" text-anchor="middle" dominant-baseline="central" font-size="13">60°</text>
+                        <path d="M 165 58 A 20 20 0 0 1 188 55" fill="none" stroke="#3498db" stroke-width="2"/>
+                        <text x="175" y="70" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold" fill="#3498db">a</text>
+                      </svg>`,
+                answers: ["80"],
+                explanation: "The angle sum of any triangle is 180°. a = 180° - 60° - 40° = 80°."
+            },
+            {
+                id: 12,
+                text: "This is an isosceles triangle. Find the base angle x.",
+                svg: `<svg viewBox="0 0 200 200" width="100%" height="200">
+                        <polygon points="100,30 40,160 160,160" fill="none" stroke="#000" stroke-width="2"/>
+                        <line x1="60" y1="95" x2="80" y2="95" stroke="#000" stroke-width="1.5"/> <!-- tick mark left -->
+                        <line x1="120" y1="95" x2="140" y2="95" stroke="#000" stroke-width="1.5"/> <!-- tick mark right -->
+                        <path d="M 90 50 A 15 15 0 0 0 110 50" fill="none" stroke="#000" stroke-width="1.5"/>
+                        <text x="100" y="65" text-anchor="middle" dominant-baseline="central" font-size="13">50°</text>
+                        <path d="M 60 160 A 15 15 0 0 1 50 140" fill="none" stroke="#3498db" stroke-width="2"/>
+                        <text x="75" y="145" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold" fill="#3498db">x</text>
+                      </svg>`,
+                answers: ["65"],
+                explanation: "In an isosceles triangle, the two base angles are equal. Total remaining is 180° - 50° = 130°. Base angle x = 130° ÷ 2 = 65°."
+            },
+            {
+                id: 13,
+                text: "This is an isosceles triangle. One of the base angles is 70°. Find the vertex angle y.",
+                svg: "",
+                answers: ["40"],
+                explanation: "The two base angles are equal, so the other base angle is also 70°. Total base angle sum = 140°. Vertex angle y = 180° - 140° = 40°."
+            },
+            {
+                id: 14,
+                text: "What is the exact size of every interior angle in an equilateral triangle?",
+                svg: "",
+                answers: ["60"],
+                explanation: "An equilateral triangle has 3 equal sides and 3 equal angles. 180° ÷ 3 = 60°."
+            },
+            {
+                id: 15,
+                text: "Calculate the size of the exterior angle z.",
+                svg: `<svg viewBox="0 0 350 150" width="100%" height="150">
+                        <polygon points="50,130 200,130 140,40" fill="none" stroke="#000" stroke-width="2"/>
+                        <line x1="200" y1="130" x2="300" y2="130" stroke="#000" stroke-width="2"/>
+                        <path d="M 80 130 A 20 20 0 0 0 70 115" fill="none" stroke="#000" stroke-width="1.5"/>
+                        <text x="85" y="120" text-anchor="middle" dominant-baseline="central" font-size="13">55°</text>
+                        <path d="M 130 55 A 15 15 0 0 1 150 55" fill="none" stroke="#000" stroke-width="1.5"/>
+                        <text x="140" y="70" text-anchor="middle" dominant-baseline="central" font-size="13">75°</text>
+                        <path d="M 220 130 A 20 20 0 0 0 185 110" fill="none" stroke="#3498db" stroke-width="2"/>
+                        <text x="215" y="115" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold" fill="#3498db">z</text>
+                      </svg>`,
+                answers: ["130"],
+                explanation: "The exterior angle of a triangle is equal to the sum of the two opposite interior angles. z = 55° + 75° = 130°."
+            },
+            {
+                id: 16,
+                text: "An exterior angle of a triangle is 140°. If one of the interior opposite angles is 60°, what is the size of the other interior opposite angle?",
+                svg: "",
+                answers: ["80"],
+                explanation: "Exterior Angle = Sum of interior opposite angles. 140° = 60° + x. Therefore, x = 140° - 60° = 80°."
+            },
+            {
+                id: 17,
+                text: "Find the missing fourth angle inside a quadrilateral if the first three angles measure 100°, 85°, and 75°.",
+                svg: "",
+                answers: ["100"],
+                explanation: "The angle sum of any quadrilateral is 360°. 360° - (100° + 85° + 75°) = 360° - 260° = 100°."
+            },
+            {
+                id: 18,
+                text: "In a parallelogram, opposite angles are equal and consecutive angles are supplementary. If one angle is 115°, what is the size of an adjacent (consecutive) angle?",
+                svg: "",
+                answers: ["65"],
+                explanation: "Consecutive angles in a parallelogram are co-interior and sum to 180°. 180° - 115° = 65°."
+            },
+            {
+                id: 19,
+                text: "Find the complement of 47°.",
+                svg: "",
+                answers: ["43"],
+                explanation: "Complementary angles sum to 90°. 90° - 47° = 43°."
+            },
+            {
+                id: 20,
+                text: "Find the supplement of 124°.",
+                svg: "",
+                answers: ["56"],
+                explanation: "Supplementary angles sum to 180°. 180° - 124° = 56°."
+            },
+            {
+                id: 21,
+                text: "Two angles forming a straight line are given algebraically as x and 2x. Find the value of x.",
+                svg: "",
+                answers: ["60"],
+                explanation: "Angles on a straight line add to 180°. x + 2x = 180°. 3x = 180°. x = 60°."
+            },
+            {
+                id: 22,
+                text: "Find the value of x in this diagram using parallel line rules.",
+                svg: `<svg viewBox="0 0 300 200" width="100%" height="200">
+                        <line x1="50" y1="60" x2="250" y2="60" stroke="#000" stroke-width="2"/>
+                        <path d="M 235 55 L 245 60 L 235 65" fill="none" stroke="#000" stroke-width="2"/>
+                        <line x1="50" y1="140" x2="250" y2="140" stroke="#000" stroke-width="2"/>
+                        <path d="M 235 135 L 245 140 L 235 145" fill="none" stroke="#000" stroke-width="2"/>
+                        <line x1="120" y1="20" x2="180" y2="180" stroke="#000" stroke-width="2"/>
+                        
+                        <path d="M 148 60 A 15 15 0 0 0 135 50" fill="none" stroke="#000" stroke-width="1.5"/>
+                        <text x="135" y="40" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold">125°</text>
+                        
+                        <!-- Top left intersection, opposite to 125 -->
+                        <path d="M 122 60 A 15 15 0 0 0 130 80" fill="none" stroke="#3498db" stroke-width="2"/>
+                        <text x="115" y="75" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold" fill="#3498db">x</text>
+                      </svg>`,
+                answers: ["125"],
+                explanation: "The angle 125° and angle x are vertically opposite angles. Therefore, x = 125°."
+            },
+            {
+                id: 23,
+                text: "A regular hexagon can be decomposed into smaller triangles. What is the sum of the interior angles of a hexagon?",
+                svg: "",
+                answers: ["720"],
+                explanation: "A hexagon has 6 sides. Angle sum = (n - 2) × 180° = 4 × 180° = 720°."
+            },
+            {
+                id: 24,
+                text: "How many axes (lines) of symmetry does a standard rectangle have?",
+                svg: "",
+                answers: ["2"],
+                explanation: "A rectangle has 2 lines of symmetry (one horizontal, one vertical through the center)."
+            },
+            {
+                id: 25,
+                text: "What transformation 'shifts' a shape up, down, left, or right without turning or mirroring it?",
+                svg: "",
+                answers: ["translation"],
+                explanation: "Translation is the mathematical term for shifting or sliding a shape without rotation or reflection."
+            }
+        ];
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            questions.forEach((q, index) => {
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                card.id = `q-card-${q.id}`;
+
+                let svgBlock = q.svg ? `<div class="diagram-container">${q.svg}</div>` : '';
+
+                card.innerHTML = `
+                    <div class="q-header">
+                        <span>Question ${index + 1}</span>
+                        <span class="q-marks">2 Marks</span>
+                    </div>
+                    <div class="q-text">${q.text}</div>
+                    ${svgBlock}
+                    <div class="answer-area">
+                        <label for="ans-${q.id}">Answer:</label>
+                        <input type="text" id="ans-${q.id}" placeholder="Type your answer here..." autocomplete="off">
+                    </div>
+                    <div class="feedback-panel" id="feedback-${q.id}">
+                        <div class="feedback-header">
+                            <span class="fb-status"></span>
+                            <span class="fb-marks"></span>
+                        </div>
+                        <div class="fb-explanation"></div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function normalizeString(str) {
+            return str.toLowerCase()
+                      .replace(/degrees/g, '')
+                      .replace(/degree/g, '')
+                      .replace(/°/g, '')
+                      .replace(/\s+/g, '')
+                      .trim();
+        }
+
+        function gradeQuiz() {
+            let totalScore = 0;
+            const studentName = document.getElementById('student-name').value || 'Anonymous';
+            
+            questions.forEach(q => {
+                const inputBox = document.getElementById(`ans-${q.id}`);
+                const userAnswer = inputBox.value;
+                const normalizedUser = normalizeString(userAnswer);
+                
+                const isCorrect = q.answers.some(ans => normalizeString(ans) === normalizedUser);
+                const card = document.getElementById(`q-card-${q.id}`);
+                const feedbackPanel = document.getElementById(`feedback-${q.id}`);
+                const fbStatus = feedbackPanel.querySelector('.fb-status');
+                const fbMarks = feedbackPanel.querySelector('.fb-marks');
+                const fbExpl = feedbackPanel.querySelector('.fb-explanation');
+
+                card.classList.remove('correct', 'incorrect');
+                feedbackPanel.classList.remove('correct', 'incorrect');
+
+                if(isCorrect && normalizedUser !== "") {
+                    totalScore += 2;
+                    card.classList.add('correct');
+                    feedbackPanel.classList.add('correct');
+                    fbStatus.innerText = "✓ Correct";
+                    fbMarks.innerText = "+2 Marks";
+                    fbExpl.innerHTML = `<strong>Explanation:</strong> ${q.explanation}`;
+                } else {
+                    card.classList.add('incorrect');
+                    feedbackPanel.classList.add('incorrect');
+                    fbStatus.innerText = "✗ Incorrect";
+                    fbMarks.innerText = "0 Marks";
+                    fbExpl.innerHTML = `<strong>Accepted Answer(s):</strong> ${q.answers.join(', ')}<br><br><strong>Explanation:</strong> ${q.explanation}`;
+                }
+            });
+
+            // Update Banner
+            document.getElementById('display-name').innerText = studentName;
+            document.getElementById('total-score').innerText = totalScore;
+            
+            const percentage = Math.round((totalScore / 50) * 100);
+            const pctDisplay = document.getElementById('percentage-score');
+            pctDisplay.innerText = percentage + '%';
+            
+            if(percentage >= 80) pctDisplay.style.color = '#16a34a';
+            else if(percentage >= 50) pctDisplay.style.color = '#ca8a04';
+            else pctDisplay.style.color = '#dc2626';
+
+            const banner = document.getElementById('score-banner');
+            banner.style.display = 'block';
+
+            // Smooth Scroll to Top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Init
+        renderQuestions();
+    </script>
+</body>
+</html>
