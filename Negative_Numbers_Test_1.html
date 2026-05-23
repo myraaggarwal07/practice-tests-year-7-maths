@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Negative Numbers Test 1</title>
+    <style>
+        :root {
+            --primary-color: #1a365d;
+            --secondary-color: #2b6cb0;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --correct-color: #38a169;
+            --incorrect-color: #e53e3e;
+            --text-main: #2d3748;
+            --text-light: #718096;
+            --border-color: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        #scoreBanner {
+            display: none;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        #scoreBanner h2 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        #scoreBanner p {
+            font-size: 20px;
+            opacity: 0.9;
+        }
+
+        .header {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+            text-align: center;
+            border-top: 6px solid var(--primary-color);
+        }
+
+        .header h1 {
+            color: var(--primary-color);
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        .metadata-group {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .input-field {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+            width: 250px;
+        }
+
+        .input-field label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--text-main);
+        }
+
+        .input-field input {
+            padding: 10px 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .input-field input:focus {
+            border-color: var(--secondary-color);
+        }
+
+        .question-card {
+            background-color: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            border-left: 6px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .question-card.correct {
+            border-left-color: var(--correct-color);
+        }
+
+        .question-card.incorrect {
+            border-left-color: var(--incorrect-color);
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .question-number {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .question-marks {
+            background-color: #edf2f7;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 14px;
+            color: var(--text-light);
+            font-weight: 600;
+        }
+
+        .question-body {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .svg-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .answer-box {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .answer-box input {
+            flex: 1;
+            max-width: 300px;
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .answer-box input:focus {
+            border-color: var(--secondary-color);
+        }
+
+        .feedback-box {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f7fafc;
+            border: 1px solid var(--border-color);
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .question-card.correct .feedback-box {
+            background-color: #f0fff4;
+            border-color: #c6f6d5;
+        }
+
+        .question-card.incorrect .feedback-box {
+            background-color: #fff5f5;
+            border-color: #fed7d7;
+        }
+
+        .feedback-title {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .correct-title { color: var(--correct-color); }
+        .incorrect-title { color: var(--incorrect-color); }
+
+        .feedback-content {
+            font-size: 15px;
+        }
+
+        .submit-btn {
+            display: block;
+            width: 100%;
+            max-width: 400px;
+            margin: 40px auto;
+            padding: 16px 24px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: background-color 0.3s, transform 0.1s;
+        }
+
+        .submit-btn:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .submit-btn:active {
+            transform: scale(0.98);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 600px) {
+            .input-field { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="scoreBanner">
+        <h2>Quiz Completed!</h2>
+        <p id="scoreDisplay"></p>
+    </div>
+
+    <div class="header">
+        <h1>Negative Numbers Test 1</h1>
+        <div class="metadata-group">
+            <div class="input-field">
+                <label for="studentName">Student Name</label>
+                <input type="text" id="studentName" placeholder="Enter your full name" required>
+            </div>
+            <div class="input-field">
+                <label for="testDate">Date</label>
+                <input type="date" id="testDate" required>
+            </div>
+        </div>
+    </div>
+
+    <div id="quizForm">
+        <div id="questionsContainer">
+            <!-- Questions dynamically generated here -->
+        </div>
+
+        <button class="submit-btn" onclick="gradeQuiz()">Submit Test & Check Answers</button>
+    </div>
+</div>
+
+<script>
+    document.getElementById('testDate').valueAsDate = new Date();
+
+    const questionBank = [
+        {
+            qHtml: "Determine the value indicated by the red dot on the number line.",
+            svgHtml: `<svg viewBox="0 0 400 100" width="100%" max-width="400px" style="background:#f8f9fa; border:1px solid #e2e8f0; border-radius:8px;">
+                        <line x1="20" y1="50" x2="380" y2="50" stroke="#2d3748" stroke-width="2"/>
+                        <line x1="50" y1="45" x2="50" y2="55" stroke="#2d3748" stroke-width="2"/>
+                        <text x="50" y="70" font-family="Arial" font-size="14" text-anchor="middle" dominant-baseline="central">-5</text>
+                        <line x1="110" y1="45" x2="110" y2="55" stroke="#2d3748" stroke-width="2"/>
+                        <line x1="170" y1="45" x2="170" y2="55" stroke="#2d3748" stroke-width="2"/>
+                        <line x1="230" y1="45" x2="230" y2="55" stroke="#2d3748" stroke-width="2"/>
+                        <text x="230" y="70" font-family="Arial" font-size="14" text-anchor="middle" dominant-baseline="central">1</text>
+                        <line x1="290" y1="45" x2="290" y2="55" stroke="#2d3748" stroke-width="2"/>
+                        <line x1="350" y1="45" x2="350" y2="55" stroke="#2d3748" stroke-width="2"/>
+                        <text x="350" y="70" font-family="Arial" font-size="14" text-anchor="middle" dominant-baseline="central">5</text>
+                        <!-- Red Dot -->
+                        <circle cx="110" cy="50" r="6" fill="#e53e3e"/>
+                      </svg>`,
+            regex: /^-3$/,
+            solution: "<strong>Answer: -3</strong><br>The number line has tick marks every 60px. The mark at x=230 is 1, and x=350 is 5. The distance is 120px for 4 units, so 30px = 1 unit. Each 60px tick is exactly 2 units. Moving right from -5 by one tick adds 2. -5 + 2 = -3."
+        },
+        {
+            qHtml: "Insert the correct symbol (< or >) into this statement: -7 ___ -9",
+            svgHtml: "",
+            regex: /^>$/,
+            solution: "<strong>Answer: ></strong><br>Negative 7 is to the right of negative 9 on the number line, which means it has a greater value. Therefore, -7 > -9."
+        },
+        {
+            qHtml: "Order these numbers from smallest to largest: 5, -2, 0, -8, 3<br><em>(Format: write them separated by commas)</em>",
+            svgHtml: "",
+            regex: /^-8\s*,\s*-2\s*,\s*0\s*,\s*3\s*,\s*5$/,
+            solution: "<strong>Answer: -8, -2, 0, 3, 5</strong><br>Think of the coldest to warmest temperatures. -8 is the coldest (smallest), followed by -2, 0, 3, and then 5 is the warmest (largest)."
+        },
+        {
+            qHtml: "What is the difference between -4 and 3?",
+            svgHtml: "",
+            regex: /^7$/,
+            solution: "<strong>Answer: 7</strong><br>The difference between two numbers is the absolute distance between them on a number line. From -4 to 0 is 4 units, and from 0 to 3 is 3 units. Total distance = 4 + 3 = 7."
+        },
+        {
+            qHtml: "Write the next number in the pattern: 3, 0, -3, -6, ___",
+            svgHtml: "",
+            regex: /^-9$/,
+            solution: "<strong>Answer: -9</strong><br>The pattern decreases by 3 each time. -6 subtract 3 gives -9."
+        },
+        {
+            qHtml: "Calculate: -8 + 3",
+            svgHtml: "",
+            regex: /^-5$/,
+            solution: "<strong>Answer: -5</strong><br>Start at -8 on the number line and move 3 units to the right. -8 + 3 = -5."
+        },
+        {
+            qHtml: "Calculate: 5 - (-2)",
+            svgHtml: "",
+            regex: /^7$/,
+            solution: "<strong>Answer: 7</strong><br>Subtracting a negative is equivalent to adding a positive. 5 - (-2) becomes 5 + 2 = 7."
+        },
+        {
+            qHtml: "Calculate: -10 - 5",
+            svgHtml: "",
+            regex: /^-15$/,
+            solution: "<strong>Answer: -15</strong><br>Start at -10 and move 5 units left on the number line. -10 - 5 = -15."
+        },
+        {
+            qHtml: "Find the missing number: -2 + ___ = 7",
+            svgHtml: "",
+            regex: /^9$/,
+            solution: "<strong>Answer: 9</strong><br>To get from -2 to 7, you need to add 9. Alternatively, solve the equation: x = 7 - (-2) = 7 + 2 = 9."
+        },
+        {
+            qHtml: "An ocean sensor is initially at -100 m (100m below sea level). It is raised by 40 m. What is its new depth? Include the negative sign.",
+            svgHtml: "",
+            regex: /^-60(m|\s*meters)?$/i,
+            solution: "<strong>Answer: -60</strong><br>Starting at -100 and moving up (adding) 40 gives: -100 + 40 = -60."
+        },
+        {
+            qHtml: "Calculate: -4 × 8",
+            svgHtml: "",
+            regex: /^-32$/,
+            solution: "<strong>Answer: -32</strong><br>A negative multiplied by a positive results in a negative. 4 × 8 = 32, so the answer is -32."
+        },
+        {
+            qHtml: "Calculate: -9 × (-5)",
+            svgHtml: "",
+            regex: /^45$/,
+            solution: "<strong>Answer: 45</strong><br>A negative multiplied by a negative results in a positive. 9 × 5 = 45."
+        },
+        {
+            qHtml: "Calculate the quotient: 36 ÷ (-3)",
+            svgHtml: "",
+            regex: /^-12$/,
+            solution: "<strong>Answer: -12</strong><br>A positive divided by a negative results in a negative. 36 ÷ 3 = 12, so the answer is -12."
+        },
+        {
+            qHtml: "Find the missing number: ___ × (-2) = -8",
+            svgHtml: "",
+            regex: /^4$/,
+            solution: "<strong>Answer: 4</strong><br>Divide the product by the known factor: -8 ÷ (-2) = 4."
+        },
+        {
+            qHtml: "Evaluate: (-3)<sup>2</sup>",
+            svgHtml: "",
+            regex: /^9$/,
+            solution: "<strong>Answer: 9</strong><br>(-3)<sup>2</sup> means (-3) × (-3). A negative times a negative is a positive, so the result is 9."
+        },
+        {
+            qHtml: "Use order of operations to evaluate: 3 + 2 × (-4)",
+            svgHtml: "",
+            regex: /^-5$/,
+            solution: "<strong>Answer: -5</strong><br>According to BIDMAS/BODMAS, multiplication comes before addition. First calculate 2 × (-4) = -8. Then add to 3: 3 + (-8) = -5."
+        },
+        {
+            qHtml: "Use order of operations to evaluate: (10 + 4) ÷ (-2)",
+            svgHtml: "",
+            regex: /^-7$/,
+            solution: "<strong>Answer: -7</strong><br>Brackets first: 10 + 4 = 14. Then divide by -2: 14 ÷ (-2) = -7."
+        },
+        {
+            qHtml: "Evaluate the expression <em>a - 2b</em> given <em>a = 4</em> and <em>b = -3</em>.",
+            svgHtml: "",
+            regex: /^10$/,
+            solution: "<strong>Answer: 10</strong><br>Substitute the values: 4 - 2(-3). Calculate multiplication first: -2 × -3 = 6. Then addition: 4 + 6 = 10."
+        },
+        {
+            qHtml: "Evaluate the expression <em>ab + a</em> using <em>a = -5</em> and <em>b = -3</em>.",
+            svgHtml: "",
+            regex: /^10$/,
+            solution: "<strong>Answer: 10</strong><br>Substitute values: (-5)(-3) + (-5). First multiply: (-5) × (-3) = 15. Then add: 15 + (-5) = 10."
+        },
+        {
+            qHtml: "Calculate: -2 × 3 - (-7) - 1",
+            svgHtml: "",
+            regex: /^0$/,
+            solution: "<strong>Answer: 0</strong><br>Multiply first: -6. Expression becomes -6 - (-7) - 1. Subtracting a negative is adding: -6 + 7 - 1. Working left to right: 1 - 1 = 0."
+        },
+        {
+            qHtml: "Write the coordinates of point A shown on the Cartesian plane. <em>Format: (x, y)</em>",
+            svgHtml: `<svg viewBox="0 0 200 200" width="100%" max-width="300px" style="background:#f8f9fa; border:1px solid #e2e8f0; border-radius:8px;">
+                        <!-- Axes -->
+                        <line x1="100" y1="10" x2="100" y2="190" stroke="#2d3748" stroke-width="2"/>
+                        <line x1="10" y1="100" x2="190" y2="100" stroke="#2d3748" stroke-width="2"/>
+                        <text x="185" y="115" font-size="12" text-anchor="middle" dominant-baseline="central">x</text>
+                        <text x="85" y="15" font-size="12" text-anchor="middle" dominant-baseline="central">y</text>
+                        
+                        <!-- Point A at (-4, 3) relative to grid -->
+                        <circle cx="60" cy="70" r="4" fill="#e53e3e"/>
+                        <text x="45" y="55" font-family="Arial" font-size="14" font-weight="bold" fill="#e53e3e" text-anchor="middle" dominant-baseline="central">A</text>
+                        
+                        <!-- Tick Marks -->
+                        <line x1="150" y1="97" x2="150" y2="103" stroke="#2d3748" stroke-width="2"/>
+                        <text x="150" y="115" font-size="12" text-anchor="middle" dominant-baseline="central">5</text>
+                        <line x1="97" y1="50" x2="103" y2="50" stroke="#2d3748" stroke-width="2"/>
+                        <text x="85" y="50" font-size="12" text-anchor="middle" dominant-baseline="central">5</text>
+                      </svg>`,
+            regex: /^\(\s*-4\s*,\s*3\s*\)$/,
+            solution: "<strong>Answer: (-4, 3)</strong><br>The origin is (0,0) at the intersection of the axes (100,100). The 5 mark on the x-axis is at 150, meaning 10 units = 1 unit on the grid. Point A is at cx=60, cy=70. From center (100,100), it's 40 units left (x = -4) and 30 units up (y = 3)."
+        },
+        {
+            qHtml: "In which quadrant of the Cartesian plane does the point (-5, 2) lie?",
+            svgHtml: "",
+            regex: /^(2|2nd|second|quadrant\s*2|ii)$/i,
+            solution: "<strong>Answer: 2nd Quadrant</strong><br>The point has a negative x-value (moves left) and a positive y-value (moves up). This places it in the top-left quadrant, which is Quadrant 2."
+        },
+        {
+            qHtml: "Evaluate the fraction: <br><br> <math style='font-size:1.2em'><mfrac><mrow>-12</mrow><mrow>4</mrow></mfrac></math>",
+            svgHtml: "",
+            regex: /^-3$/,
+            solution: "<strong>Answer: -3</strong><br>A fraction represents division. -12 ÷ 4 = -3."
+        },
+        {
+            qHtml: "Calculate: -1 - 4 + 9",
+            svgHtml: "",
+            regex: /^4$/,
+            solution: "<strong>Answer: 4</strong><br>Work from left to right. -1 - 4 = -5. Then, -5 + 9 = 4."
+        },
+        {
+            qHtml: "Calculate, working from left to right: -12 ÷ 2 × (-4)",
+            svgHtml: "",
+            regex: /^24$/,
+            solution: "<strong>Answer: 24</strong><br>Division and multiplication have the same priority, so work strictly left to right. First: -12 ÷ 2 = -6. Then: -6 × (-4) = 24."
+        }
+    ];
+
+    const container = document.getElementById("questionsContainer");
+
+    questionBank.forEach((q, index) => {
+        const card = document.createElement("div");
+        card.className = "question-card";
+        card.id = `card-${index}`;
+
+        let svgBlock = q.svgHtml ? `<div class="svg-container">${q.svgHtml}</div>` : "";
+
+        card.innerHTML = `
+            <div class="question-header">
+                <span class="question-number">Question ${index + 1}</span>
+                <span class="question-marks">2 Marks</span>
+            </div>
+            <div class="question-body">
+                ${q.qHtml}
+            </div>
+            ${svgBlock}
+            <div class="answer-box">
+                <input type="text" id="answer-${index}" placeholder="Type your answer here..." autocomplete="off">
+            </div>
+            <div class="feedback-box" id="feedback-${index}">
+                <div class="feedback-title" id="feedback-title-${index}"></div>
+                <div class="feedback-content">${q.solution}</div>
+            </div>
+        `;
+        container.appendChild(card);
+    });
+
+    function gradeQuiz() {
+        const name = document.getElementById('studentName').value.trim();
+        if (!name) {
+            alert("Please enter your name before submitting.");
+            return;
+        }
+
+        let score = 0;
+        const totalMarks = questionBank.length * 2;
+
+        questionBank.forEach((q, index) => {
+            const userInput = document.getElementById(`answer-${index}`).value.trim();
+            const card = document.getElementById(`card-${index}`);
+            const feedbackBox = document.getElementById(`feedback-${index}`);
+            const feedbackTitle = document.getElementById(`feedback-title-${index}`);
+
+            card.classList.remove('correct', 'incorrect');
+            feedbackBox.style.display = "block";
+
+            if (q.regex.test(userInput)) {
+                card.classList.add('correct');
+                feedbackTitle.className = "feedback-title correct-title";
+                feedbackTitle.innerHTML = "✓ Correct (+2 Marks)";
+                score += 2;
+            } else {
+                card.classList.add('incorrect');
+                feedbackTitle.className = "feedback-title incorrect-title";
+                feedbackTitle.innerHTML = "✗ Incorrect (0 Marks)";
+            }
+        });
+
+        const percentage = Math.round((score / totalMarks) * 100);
+        const banner = document.getElementById("scoreBanner");
+        const scoreDisplay = document.getElementById("scoreDisplay");
+
+        scoreDisplay.innerHTML = `<strong>${name}</strong>, your score is <strong>${score} / ${totalMarks}</strong> (${percentage}%)`;
+        banner.style.display = "block";
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>
