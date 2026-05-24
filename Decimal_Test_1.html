@@ -1,0 +1,106 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decimal Test 1</title>
+    <style>
+        :root {
+            --primary-blue: #2c3e50;
+            --white: #ffffff;
+            --success-green: #27ae60;
+            --error-red: #e74c3c;
+            --light-grey: #f4f7f6;
+        }
+        body { font-family: sans-serif; background-color: var(--light-grey); padding: 20px; }
+        .container { max-width: 800px; margin: auto; }
+        .header, .card { background: var(--white); padding: 20px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .header { background: var(--primary-blue); color: var(--white); text-align: center; display: none; }
+        .card { border-left: 5px solid #ccc; transition: 0.3s; }
+        input[type="text"], input[type="date"] { padding: 8px; width: 100%; box-sizing: border-box; }
+        .feedback { margin-top: 10px; padding: 10px; display: none; background: #f9f9f9; border: 1px solid #ddd; }
+        button { background: var(--primary-blue); color: white; padding: 10px 20px; border: none; cursor: pointer; width: 100%; font-size: 16px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="scoreBanner" class="header">
+            <h2 id="resultText"></h2>
+        </div>
+        <div class="card">
+            <h1>Decimal Test 1</h1>
+            <label>Student Name: <input type="text" id="studentName"></label><br><br>
+            <label>Date: <input type="date" id="testDate"></label>
+        </div>
+        <form id="quizForm">
+            <div id="questionsContainer"></div>
+            <button type="submit">Submit Test & Check Answers</button>
+        </form>
+    </div>
+    <script>
+        document.getElementById('testDate').valueAsDate = new Date();
+        const questions = [
+            { q: "What is the value of the digit 3 in 428.357?", a: "3 tenths or 0.3" },
+            { q: "What is the digit displayed in the tenths column of 36.57?", a: "5" },
+            { q: "Round 14.82 to 1 decimal place.", a: "14.8" },
+            { q: "Round 7.98 to 1 decimal place.", a: "8.0" },
+            { q: "Write 3.7823 correct to 2 decimal places.", a: "3.78" },
+            { q: "Write 0.93225 correct to 2 decimal places.", a: "0.93" },
+            { q: "Compare 8.7 and 8.44 using < or >.", a: ">" },
+            { q: "Compare 10.184 and 10.19 using < or >.", a: "<" },
+            { q: "Express 3/10 as a decimal.", a: "0.3" },
+            { q: "Express 15/100 as a decimal.", a: "0.15" },
+            { q: "Express 6 4/10 as a decimal.", a: "6.4" },
+            { q: "Round 18.34728 to 3 decimal places.", a: "18.347" },
+            { q: "Round 0.43917 to 2 decimal places.", a: "0.44" },
+            { q: "Round 7.59967 to 3 decimal places.", a: "7.600" },
+            { q: "Round 27.612 to the nearest whole number.", a: "28" },
+            { q: "Round 12.299 to the nearest whole number.", a: "12" },
+            { q: "Calculate 5.83 - 3.12.", a: "2.71" },
+            { q: "Calculate 14.35 - 7.95.", a: "6.40" },
+            { q: "Calculate 2.14 + 3.61.", a: "5.75" },
+            { q: "Calculate 10.053 + 24.124.", a: "34.177" },
+            { q: "Find the difference between 6.9 and its nearest whole number.", a: "0.1" },
+            { q: "Find the difference between 7.03 and its nearest whole number.", a: "0.03" },
+            { q: "Which is greater: 0.00102 or 0.01001?", a: "0.01001" },
+            { q: "Round 25.55 to 1 decimal place.", a: "25.6" },
+            { q: "Calculate 8.90 + 3.84.", a: "12.74" }
+        ];
+
+        const container = document.getElementById('questionsContainer');
+        questions.forEach((item, index) => {
+            container.innerHTML += `
+                <div class="card" id="q${index}">
+                    <p>Q${index + 1}: ${item.q}</p>
+                    <input type="text" id="ans${index}" placeholder="Your answer">
+                    <div class="feedback" id="fb${index}"></div>
+                </div>
+            `;
+        });
+
+        document.getElementById('quizForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            let score = 0;
+            questions.forEach((item, index) => {
+                const userAns = document.getElementById('ans'+index).value.trim();
+                const card = document.getElementById('q'+index);
+                const fb = document.getElementById('fb'+index);
+                if(userAns.toLowerCase() === item.a.toLowerCase()) {
+                    score += 2;
+                    card.style.borderLeftColor = 'var(--success-green)';
+                    fb.innerHTML = "+2 Marks. Correct!";
+                } else {
+                    card.style.borderLeftColor = 'var(--error-red)';
+                    fb.innerHTML = "0 Marks. The correct answer is " + item.a;
+                }
+                fb.style.display = 'block';
+            });
+            const banner = document.getElementById('scoreBanner');
+            banner.style.display = 'block';
+            document.getElementById('resultText').innerText = document.getElementById('studentName').value + ", your total score is: " + score + "/50 (" + (score/50*100) + "%)";
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>
