@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Negative Numbers Test 3</title>
+    <style>
+        :root {
+            --primary-color: #2c5282;
+            --secondary-color: #3182ce;
+            --bg-color: #f7fafc;
+            --card-bg: #ffffff;
+            --correct-color: #2f855a;
+            --incorrect-color: #c53030;
+            --text-main: #1a202c;
+            --text-light: #4a5568;
+            --border-color: #cbd5e0;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); padding: 20px; line-height: 1.6; }
+        .container { max-width: 900px; margin: 0 auto; }
+        #scoreBanner { display: none; background: var(--primary-color); color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; text-align: center; }
+        .header { background: var(--card-bg); padding: 30px; border-radius: 12px; margin-bottom: 20px; text-align: center; border-top: 6px solid var(--primary-color); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .input-group { display: flex; justify-content: center; gap: 20px; margin-top: 15px; }
+        .input-field { display: flex; flex-direction: column; text-align: left; }
+        .question-card { background: var(--card-bg); padding: 25px; border-radius: 8px; margin-bottom: 20px; border-left: 6px solid var(--border-color); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .question-card.correct { border-left-color: var(--correct-color); }
+        .question-card.incorrect { border-left-color: var(--incorrect-color); }
+        .answer-box input { width: 100%; padding: 10px; margin-top: 10px; border: 1px solid var(--border-color); border-radius: 4px; }
+        .feedback-box { display: none; margin-top: 15px; padding: 15px; background: #f8f9fa; border-radius: 4px; border: 1px solid #e2e8f0; }
+        .submit-btn { width: 100%; padding: 15px; background: var(--primary-color); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 18px; margin-bottom: 50px; }
+        .submit-btn:hover { background: var(--secondary-color); }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div id="scoreBanner"><h2>Quiz Completed!</h2><p id="scoreDisplay"></p></div>
+    <div class="header">
+        <h1>Negative Numbers Test 3</h1>
+        <div class="input-group">
+            <div class="input-field"><label>Student Name</label><input type="text" id="studentName"></div>
+            <div class="input-field"><label>Date</label><input type="date" id="testDate"></div>
+        </div>
+    </div>
+    <div id="questionsContainer"></div>
+    <button class="submit-btn" onclick="gradeQuiz()">Submit Test & Check Answers</button>
+</div>
+<script>
+    document.getElementById('testDate').valueAsDate = new Date();
+    const rawQuestions = [{"q": "Simplify: -5 + 7 - 3", "regex": "^-1$", "sol": "-1"}, {"q": "Calculate: -9 - (-4)", "regex": "^-5$", "sol": "-5"}, {"q": "Calculate: 12 + (-15)", "regex": "^-3$", "sol": "-3"}, {"q": "Simplify: -8 - 4 + 10", "regex": "^-2$", "sol": "-2"}, {"q": "Evaluate: 4 \u00d7 (-6)", "regex": "^-24$", "sol": "-24"}, {"q": "Evaluate: -10 \u00f7 2", "regex": "^-5$", "sol": "-5"}, {"q": "Evaluate: -8 \u00d7 (-2)", "regex": "^16$", "sol": "16"}, {"q": "Calculate: -24 \u00f7 (-6)", "regex": "^4$", "sol": "4"}, {"q": "Simplify: (-3)\u00b2 - 5", "regex": "^4$", "sol": "4"}, {"q": "Evaluate: 15 + (-3) \u00d7 2", "regex": "^9$", "sol": "9"}, {"q": "What is the value of 5x when x = -4?", "regex": "^-20$", "sol": "-20"}, {"q": "Solve: -2x = 10", "regex": "^-5$", "sol": "-5"}, {"q": "Order these: -5, 2, -10, 0, 8 (smallest to largest)", "regex": "^-10\\s*,\\s*-5\\s*,\\s*0\\s*,\\s*2\\s*,\\s*8$", "sol": "-10, -5, 0, 2, 8"}, {"q": "Compare: -3.5 ___ -3.2", "regex": "^<$", "sol": "<"}, {"q": "Temperature was -2\u00b0C, it drops 5\u00b0C. What is the new temp?", "regex": "^-7$", "sol": "-7"}, {"q": "A submarine is at -200m. It ascends 50m. New depth?", "regex": "^-150$", "sol": "-150"}, {"q": "Evaluate: (-2) \u00d7 (-2) \u00d7 (-2)", "regex": "^-8$", "sol": "-8"}, {"q": "Find x: x - 5 = -3", "regex": "^2$", "sol": "2"}, {"q": "Find x: x + 8 = 2", "regex": "^-6$", "sol": "-6"}, {"q": "In which quadrant is (3, -4)?", "regex": "^(4|4th|fourth|quadrant\\s*4|iv)$", "sol": "4th Quadrant"}, {"q": "Calculate: -5 \u00d7 4 - 2", "regex": "^-22$", "sol": "-22"}, {"q": "Calculate: 8 \u00f7 (-2) + 3", "regex": "^-1$", "sol": "-1"}, {"q": "Evaluate: (1 - 5) \u00d7 (-2)", "regex": "^8$", "sol": "8"}, {"q": "Simplify: -12 - (-12)", "regex": "^0$", "sol": "0"}, {"q": "Calculate: -100 \u00f7 (-10) - 10", "regex": "^0$", "sol": "0"}];
+    const questionBank = rawQuestions.map(q => ({
+        ...q,
+        regex: new RegExp(q.regex, "i")
+    }));
+    
+    const container = document.getElementById("questionsContainer");
+    questionBank.forEach((q, i) => {
+        container.innerHTML += `
+            <div class="question-card" id="card-${i}">
+                <p><strong>Question ${i + 1}:</strong> ${q.q}</p>
+                <div class="answer-box"><input type="text" id="ans-${i}"></div>
+                <div class="feedback-box" id="fb-${i}"><strong>Solution:</strong> ${q.sol}</div>
+            </div>`;
+    });
+    function gradeQuiz() {
+        let score = 0;
+        questionBank.forEach((q, i) => {
+            const val = document.getElementById('ans-'+i).value.trim();
+            const card = document.getElementById('card-'+i);
+            const fb = document.getElementById('fb-'+i);
+            fb.style.display = "block";
+            if (q.regex.test(val)) {
+                card.classList.add('correct');
+                score += 2;
+            } else {
+                card.classList.add('incorrect');
+            }
+        });
+        document.getElementById('scoreDisplay').innerHTML = 'Score: ' + score + '/50';
+        document.getElementById('scoreBanner').style.display = "block";
+        window.scrollTo(0,0);
+    }
+</script>
+</body>
+</html>

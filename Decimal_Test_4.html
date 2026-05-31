@@ -1,0 +1,103 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decimal Test 4</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #ecf0f1;
+            --correct-color: #27ae60;
+            --incorrect-color: #c0392b;
+            --card-bg: #ffffff;
+        }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--secondary-color); margin: 0; padding: 20px; color: var(--primary-color); }
+        .container { max-width: 800px; margin: auto; }
+        header { background: var(--primary-color); color: white; padding: 20px; border-radius: 8px; text-align: center; margin-bottom: 20px; }
+        #dashboard { display: none; background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .question-card { background: var(--card-bg); padding: 20px; margin-bottom: 15px; border-radius: 8px; border-left: 5px solid #bdc3c7; transition: border 0.3s; }
+        input[type="text"], input[type="date"] { padding: 10px; width: 100%; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; }
+        button { background: var(--primary-color); color: white; border: none; padding: 15px 30px; cursor: pointer; border-radius: 4px; font-size: 16px; width: 100%; }
+        .feedback { display: none; margin-top: 15px; padding: 10px; border-radius: 4px; border: 1px solid #ddd; background: #f9f9f9; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header><h1>Decimal Test 4</h1></header>
+        <div id="dashboard"></div>
+        <div id="student-info" style="margin-bottom: 20px;">
+            <input type="text" id="name" placeholder="Student Name">
+            <input type="date" id="date">
+        </div>
+        <form id="quiz-form">
+            <div id="questions-container"></div>
+            <button type="submit" style="margin-top:20px;">Submit Test & Check Answers</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('date').valueAsDate = new Date();
+        const questions = [
+            {q: "What is the value of the digit 7 in 14.872?", a: "0.07"},
+            {q: "What is the value of the digit 9 in 0.009?", a: "0.009"},
+            {q: "Express 7/10 as a decimal.", a: "0.7"},
+            {q: "Express 45/100 as a decimal.", a: "0.45"},
+            {q: "Is 4.61 > 4.7 false or true?", a: "false"},
+            {q: "Is 7/10 = 70/100 true or false?", a: "true"},
+            {q: "Find 17.999 - 10.5", a: "7.499"},
+            {q: "Round 18.62109 to 2 decimal places.", a: "18.62"},
+            {q: "Round 3.14159 to 4 decimal places.", a: "3.1416"},
+            {q: "Round 9.458 to the nearest whole number.", a: "9"},
+            {q: "Round $9.55 to the nearest dollar.", a: "10"},
+            {q: "Calculate 43.61 x 10.", a: "436.1"},
+            {q: "Calculate 1.25963 x 100.", a: "125.963"},
+            {q: "Calculate 2.9 / 100.", a: "0.029"},
+            {q: "Calculate 13.62 / 1000.", a: "0.01362"},
+            {q: "Calculate 3.12 + 4.29.", a: "7.41"},
+            {q: "Calculate 8.90 + 3.84.", a: "12.74"},
+            {q: "Calculate 2.179 + 8.352.", a: "10.531"},
+            {q: "Calculate 23.94 - 17.61.", a: "6.33"},
+            {q: "Calculate 158.32 - 87.53.", a: "70.79"},
+            {q: "Calculate 25.9 - 3.67.", a: "22.23"},
+            {q: "What is 0.75 as a percentage?", a: "75%"},
+            {q: "What is 0.2 as a fraction in simplest form?", a: "1/5"},
+            {q: "Arrange in descending order: 30.6, 30.3, 3.6.", a: "30.6, 30.3, 3.6"},
+            {q: "Calculate 312.5 + 34.25.", a: "346.75"}
+        ];
+
+        const container = document.getElementById('questions-container');
+        questions.forEach((item, index) => {
+            container.innerHTML += `<div class="question-card" id="q${index}">
+                <p><strong>Question ${index + 1}:</strong> ${item.q}</p>
+                <input type="text" class="ans" id="input${index}">
+                <div class="feedback" id="fb${index}"></div>
+            </div>`;
+        });
+
+        document.getElementById('quiz-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            let score = 0;
+            questions.forEach((item, index) => {
+                const userAns = document.getElementById(`input${index}`).value.trim().toLowerCase();
+                const card = document.getElementById(`q${index}`);
+                const fb = document.getElementById(`fb${index}`);
+                if (userAns === item.a.toLowerCase()) {
+                    score += 2;
+                    card.style.borderLeft = "5px solid var(--correct-color)";
+                    fb.innerHTML = "+2 Marks. Correct!";
+                } else {
+                    card.style.borderLeft = "5px solid var(--incorrect-color)";
+                    fb.innerHTML = "0 Marks. The correct answer is: <strong>" + item.a + "</strong>.<br>Explanation: Ensure you are following decimal place rules or performing the operation alignment correctly.";
+                }
+                fb.style.display = "block";
+            });
+            const dash = document.getElementById('dashboard');
+            dash.style.display = 'block';
+            dash.innerHTML = `<h2>Result for ${document.getElementById('name').value || 'Student'}: ${score}/50 (${(score/50)*100}%)</h2>`;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>

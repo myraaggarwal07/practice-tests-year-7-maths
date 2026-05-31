@@ -1,0 +1,103 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decimal Test 3</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #ecf0f1;
+            --correct-color: #27ae60;
+            --incorrect-color: #c0392b;
+            --card-bg: #ffffff;
+        }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--secondary-color); margin: 0; padding: 20px; color: var(--primary-color); }
+        .container { max-width: 800px; margin: auto; }
+        header { background: var(--primary-color); color: white; padding: 20px; border-radius: 8px; text-align: center; margin-bottom: 20px; }
+        #dashboard { display: none; background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .question-card { background: var(--card-bg); padding: 20px; margin-bottom: 15px; border-radius: 8px; border-left: 5px solid #bdc3c7; transition: border 0.3s; }
+        input[type="text"], input[type="date"] { padding: 10px; width: 100%; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; }
+        button { background: var(--primary-color); color: white; border: none; padding: 15px 30px; cursor: pointer; border-radius: 4px; font-size: 16px; width: 100%; }
+        .feedback { display: none; margin-top: 15px; padding: 10px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header><h1>Decimal Test 3</h1></header>
+        <div id="dashboard"></div>
+        <div id="student-info">
+            <input type="text" id="name" placeholder="Student Name">
+            <input type="date" id="date">
+        </div>
+        <form id="quiz-form">
+            <div id="questions-container"></div>
+            <button type="submit">Submit Test & Check Answers</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('date').valueAsDate = new Date();
+        const questions = [
+            {q: "What is the value of the digit 3 in 1.37?", a: "0.3"},
+            {q: "What is the value of the digit 6 in 23.612?", a: "0.6"},
+            {q: "Express 3/10 as a decimal.", a: "0.3"},
+            {q: "Express 23/100 as a decimal.", a: "0.23"},
+            {q: "Is 7.24 < 7.18 true or false?", a: "false"},
+            {q: "Is 3/10 = 30/100 true or false?", a: "true"},
+            {q: "Find 6.9 - 3.2", a: "3.7"},
+            {q: "Round 18.34728 to 3 decimal places.", a: "18.347"},
+            {q: "Round 0.43917 to 2 decimal places.", a: "0.44"},
+            {q: "Round 27.612 to the nearest whole number.", a: "28"},
+            {q: "Round $12.85 to the nearest dollar.", a: "13"},
+            {q: "Calculate 24.327 x 100.", a: "2432.7"},
+            {q: "Calculate 4.87 x 10.", a: "48.7"},
+            {q: "Calculate 42.7 / 10.", a: "4.27"},
+            {q: "Calculate 568.3 / 100.", a: "5.683"},
+            {q: "Calculate 2.14 + 3.61.", a: "5.75"},
+            {q: "Calculate 10.053 + 24.124.", a: "34.177"},
+            {q: "Calculate 12.45 + 3.61.", a: "16.06"},
+            {q: "Calculate 17.2 - 5.1.", a: "12.1"},
+            {q: "Calculate 128.63 - 14.50.", a: "114.13"},
+            {q: "Calculate 14.8 - 2.5.", a: "12.3"},
+            {q: "What is 0.5 as a percentage?", a: "50%"},
+            {q: "What is 0.25 as a fraction?", a: "1/4"},
+            {q: "Arrange in ascending order: 3.52, 3.05, 3.25.", a: "3.05, 3.25, 3.52"},
+            {q: "Calculate 2.38 + 4.71.", a: "7.09"}
+        ];
+
+        const container = document.getElementById('questions-container');
+        questions.forEach((item, index) => {
+            container.innerHTML += `<div class="question-card" id="q${index}">
+                <p><strong>Question ${index + 1}:</strong> ${item.q}</p>
+                <input type="text" class="ans" id="input${index}">
+                <div class="feedback" id="fb${index}"></div>
+            </div>`;
+        });
+
+        document.getElementById('quiz-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            let score = 0;
+            questions.forEach((item, index) => {
+                const userAns = document.getElementById(`input${index}`).value.trim().toLowerCase();
+                const card = document.getElementById(`q${index}`);
+                const fb = document.getElementById(`fb${index}`);
+                if (userAns === item.a.toLowerCase()) {
+                    score += 2;
+                    card.style.borderLeft = "5px solid var(--correct-color)";
+                    fb.innerHTML = "+2 Marks. Correct!";
+                } else {
+                    card.style.borderLeft = "5px solid var(--incorrect-color)";
+                    fb.innerHTML = "0 Marks. Correct answer: " + item.a;
+                }
+                fb.style.display = "block";
+            });
+            const dash = document.getElementById('dashboard');
+            dash.style.display = 'block';
+            dash.innerHTML = `<h2>Result: ${score}/50 (${(score/50)*100}%)</h2>`;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>
